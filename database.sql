@@ -16,8 +16,8 @@
 
 
 -- Dumping database structure for grading_system
-CREATE DATABASE IF NOT EXISTS `grading_system` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `grading_system`;
+CREATE DATABASE IF NOT EXISTS `unciano-grading-system` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `unciano-grading-system`;
 
 -- Dumping structure for table grading_system.level
 CREATE TABLE IF NOT EXISTS `level` (
