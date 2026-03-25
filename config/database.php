@@ -8,10 +8,10 @@
 // define('DB_PASS', '');
 
 // Production
-define('DB_HOST', '187.127.102.102');
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'unciano-grading-system');
-define('DB_USER', 'root');
-define('DB_PASS', 'admin123');
+define('DB_USER', 'unciano-grading');
+define('DB_PASS', 'UncianoGrading18.');
 
 class Database
 {
