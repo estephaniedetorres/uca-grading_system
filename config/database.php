@@ -8,7 +8,7 @@
 // define('DB_PASS', '');
 
 // Production
-define('DB_HOST', 'localhost');
+define('DB_HOST', '187.127.102.102');
 define('DB_NAME', 'unciano-grading-system');
 define('DB_USER', 'root');
 define('DB_PASS', 'admin123');
