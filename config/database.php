@@ -1,15 +1,25 @@
 <?php
 // Database Configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'grading_system');
-define('DB_USER', 'root');
-define('DB_PASS', '');
 
-class Database {
+// Development
+// define('DB_HOST', 'localhost');
+// define('DB_NAME', 'grading_system');
+// define('DB_USER', 'root');
+// define('DB_PASS', '');
+
+// Production
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'unciano-grading-system');
+define('DB_USER', 'root');
+define('DB_PASS', 'admin123');
+
+class Database
+{
     private static $instance = null;
     private $conn;
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             $this->conn = new PDO(
                 "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
@@ -26,18 +36,21 @@ class Database {
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 }
 
-function db() {
+function db()
+{
     return Database::getInstance()->getConnection();
 }
