@@ -1,0 +1,57 @@
+name: Deploy PHP App to Hostinger VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p "${{ secrets.VPS_PORT || '22' }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Ensure target directory exists
+        run: |
+          ssh -p "${{ secrets.VPS_PORT || '22' }}" -i ~/.ssh/id_rsa "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "mkdir -p '${{ secrets.VPS_DEPLOY_PATH }}'"
+
+      - name: Upload files (rsync)
+        run: |
+          rsync -az --delete \
+            -e "ssh -p ${{ secrets.VPS_PORT || '22' }} -i ~/.ssh/id_rsa" \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DEPLOY_PATH }}/"
+
+      - name: Post-deploy commands
+        run: |
+          ssh -p "${{ secrets.VPS_PORT || '22' }}" -i ~/.ssh/id_rsa "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
+          set -e
+          cd "${{ secrets.VPS_DEPLOY_PATH }}"
+
+          if command -v composer >/dev/null 2>&1; then
+            composer install --no-dev --optimize-autoloader --no-interaction
+          fi
+
+          find . -type f -name '*.php' -exec chmod 644 {} \;
+          find . -type d -exec chmod 755 {} \;
+
+          echo "Deployment complete"
+          EOF
